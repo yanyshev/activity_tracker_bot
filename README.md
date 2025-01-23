@@ -1,2 +1,2 @@
-# activity_tracker_bot
-Activity Tracker Bot | HW2 Applied Python
+# Activity Tracker Bot | HW2 Applied Python
+Description coming soon...
