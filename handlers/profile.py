@@ -3,16 +3,9 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from utils.data_storage import users
+from utils.states import ProfileForm
 
 profile_router = Router()
-
-class ProfileForm(StatesGroup):
-    weight = State()
-    height = State()
-    age = State()
-    activity = State()
-    city = State()
-    calories_goal = State()
 
 # /set_profile
 @profile_router.message(Command("set_profile"))

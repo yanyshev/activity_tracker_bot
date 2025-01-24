@@ -4,12 +4,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from utils.data_storage import users
 from utils.src import get_food_info
+from utils.states import FoodForm
 
 activity_router = Router()
-
-class FoodForm(StatesGroup):
-    name = State()
-    calories = State()
 
 # /log_water
 @activity_router.message(Command("log_water"))
