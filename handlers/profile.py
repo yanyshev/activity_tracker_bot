@@ -17,7 +17,7 @@ async def cmd_set_profile(message: types.message, state: FSMContext):
             "weight": None,
             "height": None,
             "age": None,
-            "activity": None,
+            "activity": 0,
             "city": None,
             "water_goal": 0,
             "calorie_goal": 0,
@@ -58,18 +58,33 @@ async def process_city(message: types.message, state: FSMContext):
     user_id = str(message.from_user.id)
     await state.update_data(city=message.text)
     users[user_id]["city"] = message.text
-    await message.reply("What's your calories goal?")
-    await state.set_state(ProfileForm.calories_goal)
+    await message.reply("What's your water consumption goal?")
+    await state.set_state(ProfileForm.water_goal)
+
+@profile_router.message(ProfileForm.water_goal)
+async def process_water(message: types.message, state: FSMContext):
+    user_id = str(message.from_user.id)
+    try:
+        await state.update_data(water_goal=message.text)
+        users[user_id]["water_goal"] = int(message.text)
+        await message.reply("What's your calories goal?")
+        await state.set_state(ProfileForm.calories_goal)
+    except:
+        await message.reply("Your answer cannot be converted to a number. Please try again.")
 
 @profile_router.message(ProfileForm.calories_goal)
 async def process_calories(message: types.message, state: FSMContext):
     user_id = str(message.from_user.id)
-    await state.update_data(calories_goal=message.text)
-    users[user_id]["calorie_goal"] = int(message.text)
-    data = await state.get_data()
-    await message.reply("Here's your profile:\n"
-                        f"City: {data.get('city')}\n"
-                        f"Weight: {data.get('weight')}\n"
-                        f"Height: {data.get('height')}\n"
-                        f"Calories goal: {data.get('calories_goal')}\n")
-    await state.clear()
+    try:
+        await state.update_data(calories_goal=message.text)
+        users[user_id]["calorie_goal"] = int(message.text)
+        data = await state.get_data()
+        await message.reply("Here's your profile:\n"
+                            f"City: {data.get('city')}\n"
+                            f"Weight: {data.get('weight')}\n"
+                            f"Height: {data.get('height')}\n"
+                            f"Water goal: {data.get('water_goal')}\n"
+                            f"Calories goal: {data.get('calories_goal')}\n")
+        await state.clear()
+    except:
+        await message.reply("Your answer cannot be converted to a number. Please try again.")

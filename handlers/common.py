@@ -4,6 +4,9 @@ from utils.data_storage import users
 
 router = Router()
 
+def setup_handlers(dp):
+    dp.include_router(router)
+
 # /start
 @router.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -38,6 +41,6 @@ async def cmd_check_progress(message: types.Message):
         "\n"
         "Calories:\n"
         f"- Consumed {data['logged_calories']} kcal of {data['calorie_goal']} kcal\n"
-        f"- Burned {data['burned_calories']} kcal\n")
+        f"- Burned {data['activity']} kcal\n")
 
     await message.reply(response)

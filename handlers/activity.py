@@ -5,6 +5,8 @@ from aiogram.fsm.state import State, StatesGroup
 from utils.data_storage import users
 from utils.src import get_food_info
 from utils.states import FoodForm
+from utils.src import workout_calories_per_min
+from utils.states import ProcessFoodWeight
 
 activity_router = Router()
 
@@ -49,11 +51,12 @@ async def cmd_log_food(message: types.Message, state: FSMContext):
     else:
         await state.update_data(name=product)
         await state.update_data(calories=nutrition_info)
-        await message.answer(
+        await message.reply(
             f"We found {product} with {nutrition_info} per 100 g.\n"
             "How much did you eat? g")
+        await state.set_state(ProcessFoodWeight.food_weight)
 
-@activity_router.message()
+@activity_router.message(ProcessFoodWeight.food_weight)
 async def get_food_weight(message: types.Message, state: FSMContext):
     user_id = str(message.from_user.id)
     if not message.text.isdigit():
@@ -63,10 +66,12 @@ async def get_food_weight(message: types.Message, state: FSMContext):
     weight = int(message.text)
     total_calories = (data['calories'] / 100) * weight
     users[user_id]["logged_calories"] += total_calories
+    await state.update_data(food_weight=message.text)
     await message.answer(
         f"Written down: {total_calories:.1f} kcal. "
         f"Progress so far: {users[user_id]['logged_calories']:.1f} kcal."
     )
+    await state.clear()
 
 # /log_workout
 @activity_router.message(Command("log_workout"))
@@ -75,32 +80,26 @@ async def cmd_log_workout(message: types.Message):
     args = message.text.split(maxsplit=2)
 
     if len(args) < 3 or not args[2].isdigit():
-        await message.answer(
-            "Please consider input format: /log_workout <training type> <duration>")
+        await message.answer("Please use the correct format: /log_workout <workout_type> <duration>")
+        return
+
+    if user_id not in users:
+        await message.answer("Set up your profile first: /set_profile")
         return
 
     workout_type = args[1].lower()
     duration = int(args[2])
 
-    # Simulate calorie burn per workout type (you can expand this dictionary)
-    workout_calories_per_min = {
-        "бег": 10,
-        "плавание": 8,
-        "йога": 5
-    }
-
     if workout_type not in workout_calories_per_min:
-        await message.answer(f"Unknown workout type '{workout_type}'.")
+        await message.answer(f"Unknown workout type '{workout_type}'. Please choose from: {', '.join(workout_calories_per_min.keys())}.")
         return
 
     calories_burned = workout_calories_per_min[workout_type] * duration
-    additional_water = (duration // 30) * 200
 
-    # Update user's logged workouts
-    users[user_id]["burned_calories"] += calories_burned
-    users[user_id]["logged_water"] += additional_water
+    users[user_id]["activity"] += calories_burned
 
     await message.answer(
-        f"🏃‍♂️ {workout_type.capitalize()} {duration} минут — сожжено {calories_burned} ккал. "
-        f"Дополнительно: выпейте {additional_water} мл воды."
+        f"Workout logged: {workout_type.capitalize()} for {duration} minutes.\n"
+        f"Calories burned: {calories_burned} kcal.\n"
     )
+
