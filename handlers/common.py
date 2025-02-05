@@ -1,4 +1,5 @@
 from aiogram import Router, types
+from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from utils.data_storage import users
 
@@ -10,10 +11,10 @@ def setup_handlers(dp):
 # /start
 @router.message(Command("start"))
 async def cmd_start(message: types.Message):
-    await message.reply(
-        "Hello!\n"
+    await message.answer(
+        f"Hello, <b>{message.from_user.full_name}</b>!\n"
         "I can calculate your activity, calories and water consumption\n"
-        "Start setting up your profile with /set_profile")
+        "Start setting up your profile with /set_profile", parse_mode=ParseMode.HTML)
 
 # /help
 @router.message(Command("help"))

@@ -1,4 +1,8 @@
 import requests
+from urllib3 import request
+
+from config import WEATHER_API_KEY
+
 
 def get_food_info(product_name):
     url = f"https://world.openfoodfacts.org/cgi/search.pl?action=process&search_terms={product_name}&json=true"
@@ -15,6 +19,7 @@ def get_food_info(product_name):
         return None
     print(f"Ошибка: {response.status_code}")
     return None
+
 
 workout_calories_per_min = {
     "running": 11,
@@ -46,5 +51,41 @@ workout_calories_per_min = {
     "hiking": 7,
 }
 
-def get_weather():
-    pass
+
+def get_location(str_location:str):
+    if str_location is None:
+        return None
+    url = "http://api.openweathermap.org/geo/1.0/direct"
+    payload = {
+        "q": str_location,
+        "limit": 1,
+        "appid": WEATHER_API_KEY
+    }
+    response = requests.get(url, params=payload)
+    if response.status_code == 200:
+        data = response.json()[0]
+        return {"lat": data.get("lat"),
+                "lon": data.get("lon")}
+    print(f"Error: {response.status_code}")
+    return None
+
+
+def get_weather(location:dict):
+    if location is None:
+        return None
+    url = "https://api.openweathermap.org/data/2.5/weather"
+    payload = {
+        "lat": location["lat"],
+        "lon": location["lon"],
+        "appid": WEATHER_API_KEY
+    }
+    response = requests.get(url, params=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data.get("main").get("temp")
+    print(f"Error: {response.status_code}")
+    return None
+
+
+def kelvin_to_celsius(kelvin):
+    return kelvin - 273.15

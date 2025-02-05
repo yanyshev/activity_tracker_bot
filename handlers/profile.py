@@ -56,6 +56,7 @@ async def process_age(message: types.message, state: FSMContext):
 @profile_router.message(ProfileForm.city)
 async def process_city(message: types.message, state: FSMContext):
     user_id = str(message.from_user.id)
+    await message.reply("What's your age?")
     await state.update_data(city=message.text)
     users[user_id]["city"] = message.text
     await message.reply("What's your water consumption goal?")
