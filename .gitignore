@@ -8,3 +8,5 @@ ehthumbs.db
 Thumbs.db
 .ipynb
 sample.ipynb
+.idea
+__pycache__
