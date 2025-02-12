@@ -18,3 +18,12 @@ Log food consumption, the format is `/log_food <food product>`. API [OpenFoodFac
 - /log_workout
 Log workout activity, the format is `/log_workout <workout type> <activity in minutes>`. No API is used
 
+## Structure of the Project
+- bot.py \
+Main file of the project. Initializes the bot, manages it startup, etc.
+- config.py \
+Contains configuration setting and environment variables. For proper work requires `.env` file with API keys
+- utils \
+  (directory) Contains logging functions, error handling API functions, etc.
+- handlers \
+(directory) Contains handlers distinguished by functionality and bot logic
