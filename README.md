@@ -12,7 +12,7 @@ Check your progress
 - /log_water \
 Log water consumption, the format is `/log_water <amount consumed in ml>` \
 API [OpenWeather](https://openweathermap.org/) is used to determine the water goal based on a temperature info. The rule is following:
-$Water Standard = 10 * Weight + 6.25 * Height - 5 * Age + max(t(C) // 25, 0)$
+$Water Standard = 10 * Weight + max(t(C) // 25, 0)$
 - /log_food \
 Log food consumption, the format is `/log_food <food product>`. API [OpenFoodFacts](https://world.openfoodfacts.org/) is used to initialize food's nutritional info. After it, input the weight, g
 - /log_workout

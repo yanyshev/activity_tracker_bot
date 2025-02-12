@@ -81,10 +81,12 @@ async def process_city(message: types.message, state: FSMContext):
         state_data = await state.get_data()
         water_goal = float(state_data["weight"]) * 30 + weather
         await state.update_data(water_goal=water_goal)
+        users[user_id]["water_goal"] = water_goal
         # await message.answer(f"Your water consumption standard is {water_goal} ml")
         await message.answer("Calculating your calories consumption standard...")
         calories_goal = float(state_data["height"]) * 6.25 + float(state_data["weight"]) * 10 - 5 * float(state_data["age"])
         await state.update_data(calories_goal=calories_goal)
+        users[user_id]["calories_goal"] = calories_goal
         data = await state.get_data()
         await message.reply("Here's your profile:\n"
                             f"City: {data.get('city')}\n"

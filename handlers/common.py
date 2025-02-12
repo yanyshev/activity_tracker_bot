@@ -39,7 +39,7 @@ async def cmd_check_progress(message: types.Message):
 
     data = users[user_id]
     response = (
-        "Here's your profile:\n"
+        "<b>Here's your profile:</b>\n"
         f"City: {data.get('city')}\n"
         f"Weight: {data.get('weight')}\n"
         f"Height: {data.get('height')}\n"
