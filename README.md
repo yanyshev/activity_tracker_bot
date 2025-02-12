@@ -1,3 +1,20 @@
 # Activity Tracker Bot
 
-Для */log_workout* я использую кастомный dict с калориями по активностям. Я не нашел адекватный API для учета тренировок, а YaGPT галлюцинирует. 
+## Available Commands
+- /start \
+Activate the bot
+- /help \
+List all available commands
+- /set_profile \
+Start setting up the profile
+- /check_progress \
+Check your progress
+- /log_water \
+Log water consumption, the format is `/log_water <amount consumed in ml>` \
+API [OpenWeather](https://openweathermap.org/) is used to determine the water goal based on a temperature info. The rule is following:
+$Water Standard = 10 * Weight + 6.25 * Height - 5 * Age + max(t(C) // 25, 0)$
+- /log_food \
+Log food consumption, the format is `/log_food <food product>`. API [OpenFoodFacts](https://world.openfoodfacts.org/) is used to initialize food's nutritional info. After it, input the weight, g
+- /log_workout
+Log workout activity, the format is `/log_workout <workout type> <activity in minutes>`. No API is used
+
