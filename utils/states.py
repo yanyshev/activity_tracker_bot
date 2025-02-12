@@ -7,7 +7,11 @@ class ProfileForm(StatesGroup):
     activity = State()
     city = State()
     water_goal = State()
+    water_logged = State()
     calories_goal = State()
+    calories_logged = State()
+    calories_burned = State()
+    location = State()
 
 class FoodForm(StatesGroup):
     name = State()

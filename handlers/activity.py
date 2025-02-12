@@ -1,10 +1,8 @@
 from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State, StatesGroup
 from utils.data_storage import users
 from utils.src import get_food_info
-from utils.states import FoodForm
 from utils.src import workout_calories_per_min
 from utils.states import ProcessFoodWeight
 
@@ -24,8 +22,8 @@ async def cmd_log_water(message: types.Message):
         await message.answer("Set up your profile first: /set_profile")
         return
 
-    users[user_id]["logged_water"] += amount
-    remaining = max(0, users[user_id]["water_goal"] - users[user_id]["logged_water"])
+    users[user_id]["water_logged"] += amount
+    remaining = max(0, users[user_id]["water_goal"] - users[user_id]["water_logged"])
     await message.answer(
             f"You've logged {amount} ml. Remaining to reach the goal: {remaining} ml."
         )
@@ -65,11 +63,11 @@ async def get_food_weight(message: types.Message, state: FSMContext):
     data = await state.get_data()
     weight = int(message.text)
     total_calories = (data['calories'] / 100) * weight
-    users[user_id]["logged_calories"] += total_calories
+    users[user_id]["calories_logged"] += total_calories
     await state.update_data(food_weight=message.text)
     await message.answer(
         f"Written down: {total_calories:.1f} kcal. "
-        f"Progress so far: {users[user_id]['logged_calories']:.1f} kcal."
+        f"Progress so far: {users[user_id]['calories_logged']:.1f} kcal."
     )
     await state.clear()
 
@@ -96,7 +94,8 @@ async def cmd_log_workout(message: types.Message):
 
     calories_burned = workout_calories_per_min[workout_type] * duration
 
-    users[user_id]["activity"] += calories_burned
+    users[user_id]["calories_burned"] += calories_burned
+    users[user_id]["activity"] += duration
 
     await message.answer(
         f"Workout logged: {workout_type.capitalize()} for {duration} minutes.\n"

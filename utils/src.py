@@ -1,7 +1,11 @@
 import requests
-from urllib3 import request
-
 from config import WEATHER_API_KEY
+
+
+class EmptyListError(Exception):
+    def __init__(self, message="The list is empty"):
+        self.message = message
+        super().__init__(self.message)
 
 
 def get_food_info(product_name):
@@ -63,9 +67,12 @@ def get_location(str_location:str):
     }
     response = requests.get(url, params=payload)
     if response.status_code == 200:
-        data = response.json()[0]
-        return {"lat": data.get("lat"),
-                "lon": data.get("lon")}
+        data = response.json()
+        if not data or data is None:
+            raise EmptyListError()
+        city = data[0]
+        return {"lat": city.get("lat"),
+                "lon": city.get("lon")}
     print(f"Error: {response.status_code}")
     return None
 
@@ -89,3 +96,4 @@ def get_weather(location:dict):
 
 def kelvin_to_celsius(kelvin):
     return kelvin - 273.15
+

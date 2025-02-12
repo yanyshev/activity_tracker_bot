@@ -1,7 +1,7 @@
 from aiogram import Router, types
-from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from utils.data_storage import users
+from aiogram.enums import ParseMode
 
 router = Router()
 
@@ -23,6 +23,10 @@ async def cmd_help(message: types.Message):
         "Available commands:\n"
         "/start - Start the bot\n"
         "/set_profile - Set up your profile\n"
+        "/check_progress - Check your progress\n"
+        "/log_water - Log your water\n"
+        "/log_food - Log your food\n"
+        "/log_workout - Log your activity\n"
         "/help - Show this message\n")
 
 # /check_progress
@@ -35,13 +39,19 @@ async def cmd_check_progress(message: types.Message):
 
     data = users[user_id]
     response = (
-        "Your progress:\n"
+        "Here's your profile:\n"
+        f"City: {data.get('city')}\n"
+        f"Weight: {data.get('weight')}\n"
+        f"Height: {data.get('height')}\n"
+        f"Age: {data.get("age")}\n"
         "\n"
-        "Water consumption:\n"
-        f"- Consumed {data['logged_water']} ml of {data['water_goal']} ml\n"
+        "<b>Your water consumption progress:</b>\n"
+        f"Water logged: {data.get('water_logged')}\n"
+        f"Water goal: {data.get('water_goal')}\n"
         "\n"
-        "Calories:\n"
-        f"- Consumed {data['logged_calories']} kcal of {data['calorie_goal']} kcal\n"
-        f"- Burned {data['activity']} kcal\n")
+        "<b>Your calories progress:</b>\n"
+        f"Calories logged: {data.get('calories_logged')}\n"
+        f"Calories goal: {data.get('calories_goal')}\n"
+        f"Calories burned: {data.get('calories_burned')}\n")
 
-    await message.reply(response)
+    await message.reply(response, parse_mode=ParseMode.HTML)
